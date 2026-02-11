@@ -130,7 +130,7 @@ Pipeline em `.github/workflows/ci.yml` com:
 
 Cobertura mínima obrigatória: `70%` global.
 
-## Prontidão comercial (checklist)
+(checklist) Oque ja foi testado!
 
 - [x] Arquitetura enterprise
 - [x] Segurança base corporativa
@@ -140,7 +140,3 @@ Cobertura mínima obrigatória: `70%` global.
 - [x] Docker e documentação de deploy
 - [x] CI com gate de qualidade
 - [x] Testes automatizados com threshold
-
-## Licença
-
-MIT
