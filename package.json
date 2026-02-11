@@ -1,0 +1,59 @@
+{
+  "name": "enterprise-auth-api",
+  "version": "2.0.0",
+  "description": "Enterprise-ready Authentication API (Node.js + Express + Prisma + PostgreSQL)",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "jest --runInBand --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand --coverage --ci",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "demo:up": "docker compose up -d postgres && npm run prisma:deploy && npm run dev",
+    "demo:down": "docker compose down"
+  },
+  "keywords": [
+    "api",
+    "enterprise",
+    "authentication",
+    "jwt",
+    "refresh-token-rotation",
+    "nodejs",
+    "express",
+    "prisma",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pino": "^9.6.0",
+    "pino-http": "^10.4.0",
+    "rate-limiter-flexible": "^5.0.5",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
+    "prisma": "^6.4.1",
+    "supertest": "^7.0.0"
+  }
+}

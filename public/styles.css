@@ -1,0 +1,150 @@
+:root {
+  --bg: #0b1220;
+  --bg-soft: #111a2e;
+  --text: #e7ecf6;
+  --muted: #9ca9bf;
+  --primary: #3b82f6;
+  --primary-strong: #2563eb;
+  --card-border: #25324d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  background: radial-gradient(circle at top right, #1b2a4a, var(--bg) 40%);
+  color: var(--text);
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+.topbar {
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(6, 10, 20, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.topbar-inner {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.hero {
+  padding: 88px 0 56px;
+}
+
+.badge {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 1px solid #294175;
+  border-radius: 999px;
+  color: #aecdff;
+  background: rgba(59, 130, 246, 0.12);
+  font-size: 14px;
+}
+
+h1 {
+  margin: 0;
+  line-height: 1.1;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+}
+
+.subtitle {
+  margin-top: 16px;
+  color: var(--muted);
+  max-width: 760px;
+  line-height: 1.65;
+  font-size: 1.05rem;
+}
+
+.actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  text-decoration: none;
+  font-weight: 600;
+  padding: 12px 18px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-strong);
+}
+
+.btn-secondary {
+  border: 1px solid var(--card-border);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  border-color: #3a4d72;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.grid {
+  padding: 10px 0 70px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(17, 26, 46, 0.9), rgba(11, 18, 32, 0.9));
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.footer {
+  border-top: 1px solid var(--card-border);
+  padding: 18px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
