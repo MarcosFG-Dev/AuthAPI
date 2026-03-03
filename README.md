@@ -1,6 +1,4 @@
-# Enterprise Auth API (Node.js + Express + Prisma + PostgreSQL)
-
-API de autenticação enterprise para produtos B2B, com foco em segurança corporativa, escalabilidade e operação em produção.
+API de autenticação para produtos B2B, com foco em segurança corporativa, escalabilidade e operação em produção.
 
 ## Destaques de produto
 
@@ -128,8 +126,6 @@ Pipeline em `.github/workflows/ci.yml` com:
 - `prisma generate`
 - `npm run test:ci`
 
-Cobertura mínima obrigatória: `70%` global.
-
 (checklist) Oque ja foi testado!
 
 - [x] Arquitetura enterprise
@@ -140,3 +136,4 @@ Cobertura mínima obrigatória: `70%` global.
 - [x] Docker e documentação de deploy
 - [x] CI com gate de qualidade
 - [x] Testes automatizados com threshold
+
