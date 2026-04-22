@@ -76,6 +76,15 @@ class InMemoryRefreshTokenRepository {
       token.revokedReason = reason;
     }
   }
+
+  async revokeAllActiveForUser(userId, reason = "logout_all_sessions") {
+    this.tokens.forEach((token) => {
+      if (token.userId === userId && !token.revokedAt) {
+        token.revokedAt = new Date();
+        token.revokedReason = reason;
+      }
+    });
+  }
 }
 
 function createInMemoryDependencies() {

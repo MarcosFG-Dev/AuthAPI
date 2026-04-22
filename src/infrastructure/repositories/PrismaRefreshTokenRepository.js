@@ -79,6 +79,19 @@ class PrismaRefreshTokenRepository extends RefreshTokenRepository {
       },
     });
   }
+
+  async revokeAllActiveForUser(userId, reason = "logout_all_sessions") {
+    return this.prisma.refreshToken.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+        revokedReason: reason,
+      },
+    });
+  }
 }
 
 module.exports = PrismaRefreshTokenRepository;

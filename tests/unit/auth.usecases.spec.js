@@ -2,6 +2,7 @@ const LoginUseCase = require("../../src/application/use-cases/auth/LoginUseCase"
 const RegisterUserUseCase = require("../../src/application/use-cases/auth/RegisterUserUseCase");
 const RefreshSessionUseCase = require("../../src/application/use-cases/auth/RefreshSessionUseCase");
 const LogoutUseCase = require("../../src/application/use-cases/auth/LogoutUseCase");
+const LogoutAllSessionsUseCase = require("../../src/application/use-cases/auth/LogoutAllSessionsUseCase");
 const GetCurrentUserUseCase = require("../../src/application/use-cases/auth/GetCurrentUserUseCase");
 const createInMemoryDependencies = require("../helpers/inMemoryDependencies");
 
@@ -100,6 +101,42 @@ describe("Auth use cases - branch coverage", () => {
 
     await expect(useCase.execute({ refreshToken: null })).resolves.toEqual({ ok: true });
     await expect(useCase.execute({ refreshToken: issued.token })).resolves.toEqual({ ok: true });
+  });
+
+  it("logout all revokes every active session from the same user", async () => {
+    const deps = createInMemoryDependencies();
+    const user = await seedUser(deps);
+    const t1 = deps.tokenService.generateRefreshToken({ userId: user.id });
+    const t2 = deps.tokenService.generateRefreshToken({ userId: user.id });
+    await deps.refreshTokenRepository.create({
+      jti: t1.jti,
+      familyId: t1.familyId,
+      userId: user.id,
+      tokenHash: deps.tokenService.hashToken(t1.token),
+      expiresAt: t1.expiresAt,
+      createdByIp: "127.0.0.1",
+      userAgent: "jest",
+    });
+    await deps.refreshTokenRepository.create({
+      jti: t2.jti,
+      familyId: t2.familyId,
+      userId: user.id,
+      tokenHash: deps.tokenService.hashToken(t2.token),
+      expiresAt: t2.expiresAt,
+      createdByIp: "127.0.0.1",
+      userAgent: "jest",
+    });
+
+    const useCase = new LogoutAllSessionsUseCase({
+      refreshTokenRepository: deps.refreshTokenRepository,
+    });
+
+    await expect(useCase.execute({ userId: user.id })).resolves.toEqual({ ok: true });
+
+    const activeTokens = deps.refreshTokenRepository.tokens.filter(
+      (token) => token.userId === user.id && !token.revokedAt
+    );
+    expect(activeTokens).toHaveLength(0);
   });
 
   it("get current user fails when not found", async () => {

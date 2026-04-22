@@ -18,6 +18,10 @@ class RefreshTokenRepository {
   async revokeByJti() {
     throw new Error("Method not implemented");
   }
+
+  async revokeAllActiveForUser() {
+    throw new Error("Method not implemented");
+  }
 }
 
 module.exports = RefreshTokenRepository;

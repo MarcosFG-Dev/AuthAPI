@@ -9,7 +9,7 @@ describe("Auth API v1 integration", () => {
     const agent = request.agent(app);
 
     const registerRes = await agent.post("/api/v1/auth/register").send({
-      email: "enterprise@example.com",
+      email: "  Enterprise@Example.com ",
       password: "StrongPass!2026",
       name: "Enterprise Client",
     });
@@ -31,5 +31,32 @@ describe("Auth API v1 integration", () => {
 
     const logoutRes = await agent.post("/api/v1/auth/logout");
     expect(logoutRes.statusCode).toBe(204);
+  });
+
+  it("rejects unknown fields in auth payload and allows logout-all for authenticated users", async () => {
+    const dependencies = createInMemoryDependencies();
+    const app = buildApp(dependencies);
+    const agent = request.agent(app);
+
+    const invalidRegister = await agent.post("/api/v1/auth/register").send({
+      email: "strict@example.com",
+      password: "StrongPass!2026",
+      name: "Strict",
+      role: "admin",
+    });
+    expect(invalidRegister.statusCode).toBe(422);
+
+    const registerRes = await agent.post("/api/v1/auth/register").send({
+      email: "strict@example.com",
+      password: "StrongPass!2026",
+      name: "Strict",
+    });
+    expect(registerRes.statusCode).toBe(201);
+
+    const accessToken = registerRes.body.data.accessToken;
+    const logoutAllRes = await agent
+      .post("/api/v1/auth/logout-all")
+      .set("Authorization", `Bearer ${accessToken}`);
+    expect(logoutAllRes.statusCode).toBe(204);
   });
 });
