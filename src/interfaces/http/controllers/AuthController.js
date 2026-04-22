@@ -2,11 +2,19 @@ const env = require("../../../shared/config/env");
 const { successResponse } = require("../../../shared/http/response");
 
 class AuthController {
-  constructor({ registerUserUseCase, loginUseCase, refreshSessionUseCase, logoutUseCase, getCurrentUserUseCase }) {
+  constructor({
+    registerUserUseCase,
+    loginUseCase,
+    refreshSessionUseCase,
+    logoutUseCase,
+    logoutAllSessionsUseCase,
+    getCurrentUserUseCase,
+  }) {
     this.registerUserUseCase = registerUserUseCase;
     this.loginUseCase = loginUseCase;
     this.refreshSessionUseCase = refreshSessionUseCase;
     this.logoutUseCase = logoutUseCase;
+    this.logoutAllSessionsUseCase = logoutAllSessionsUseCase;
     this.getCurrentUserUseCase = getCurrentUserUseCase;
   }
 
@@ -108,6 +116,18 @@ class AuthController {
     try {
       const refreshToken = req.cookies?.[env.COOKIE_REFRESH_NAME];
       await this.logoutUseCase.execute({ refreshToken });
+      this.clearRefreshCookie(res);
+      return res.status(204).send();
+    } catch (err) {
+      return next(err);
+    }
+  };
+
+  logoutAll = async (req, res, next) => {
+    try {
+      await this.logoutAllSessionsUseCase.execute({
+        userId: req.auth.userId,
+      });
       this.clearRefreshCookie(res);
       return res.status(204).send();
     } catch (err) {

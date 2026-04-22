@@ -96,6 +96,14 @@ const openApiSpec = {
         responses: { 204: { description: "No Content" } },
       },
     },
+    "/auth/logout-all": {
+      post: {
+        tags: ["Auth"],
+        security: [{ bearerAuth: [] }],
+        summary: "Revoke all active refresh sessions for current user",
+        responses: { 204: { description: "No Content" }, 401: { description: "Unauthorized" } },
+      },
+    },
     "/auth/me": {
       get: {
         tags: ["Auth"],

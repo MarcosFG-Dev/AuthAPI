@@ -11,6 +11,7 @@ function buildAuthRoutes({ authController, tokenService }) {
   router.post("/login", authLimiter, validateRequest(loginSchema), authController.login);
   router.post("/refresh", authLimiter, authController.refresh);
   router.post("/logout", authController.logout);
+  router.post("/logout-all", authenticate({ tokenService }), authController.logoutAll);
   router.get("/me", authenticate({ tokenService }), authController.me);
 
   return router;

@@ -8,6 +8,7 @@ const RegisterUserUseCase = require("./application/use-cases/auth/RegisterUserUs
 const LoginUseCase = require("./application/use-cases/auth/LoginUseCase");
 const RefreshSessionUseCase = require("./application/use-cases/auth/RefreshSessionUseCase");
 const LogoutUseCase = require("./application/use-cases/auth/LogoutUseCase");
+const LogoutAllSessionsUseCase = require("./application/use-cases/auth/LogoutAllSessionsUseCase");
 const GetCurrentUserUseCase = require("./application/use-cases/auth/GetCurrentUserUseCase");
 const AuthController = require("./interfaces/http/controllers/AuthController");
 
@@ -59,6 +60,12 @@ function buildContainer(overrides = {}) {
       userRepository,
     });
 
+  const logoutAllSessionsUseCase =
+    overrides.logoutAllSessionsUseCase ||
+    new LogoutAllSessionsUseCase({
+      refreshTokenRepository,
+    });
+
   const authController =
     overrides.authController ||
     new AuthController({
@@ -66,6 +73,7 @@ function buildContainer(overrides = {}) {
       loginUseCase,
       refreshSessionUseCase,
       logoutUseCase,
+      logoutAllSessionsUseCase,
       getCurrentUserUseCase,
     });
 

@@ -5,6 +5,7 @@ API de autenticação para produtos B2B, com foco em segurança corporativa, esc
 - Arquitetura limpa em camadas: `domain`, `application`, `infrastructure`, `interfaces`, `shared`
 - JWT com **access token curto** e **refresh token rotation**
 - Mitigação de **refresh token reuse attack** (revogação de família)
+- Encerramento global de sessões com `logout-all`
 - Refresh token em cookie **HTTP-only**
 - Observabilidade com logs estruturados (`pino`) e `x-request-id`
 - API versionada (`/api/v1`) com respostas padronizadas
@@ -45,6 +46,7 @@ tests/
 - Bloqueio de brute force de login
 - `helmet` + `cors` com allow-list + rate limiting
 - Validação de payload com Zod
+- Rejeição de campos inesperados em payloads de autenticação
 
 ## Padrão de respostas
 
@@ -60,6 +62,7 @@ tests/
 - `POST /api/v1/auth/login`
 - `POST /api/v1/auth/refresh`
 - `POST /api/v1/auth/logout`
+- `POST /api/v1/auth/logout-all`
 - `GET /api/v1/auth/me`
 - `GET /docs`
 
