@@ -49,6 +49,7 @@ class LoginUseCase {
       user: this.userRepository.toPublic(user),
       accessToken,
       refreshToken: refreshToken.token,
+      refreshTokenExpiresAt: refreshToken.expiresAt,
       accessTokenExpiresIn: this.tokenService.accessTtl,
     };
   }
