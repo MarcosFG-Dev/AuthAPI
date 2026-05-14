@@ -83,6 +83,7 @@ class RefreshSessionUseCase {
       user: this.userRepository.toPublic(user),
       accessToken,
       refreshToken: newRefreshToken.token,
+      refreshTokenExpiresAt: newRefreshToken.expiresAt,
       accessTokenExpiresIn: this.tokenService.accessTtl,
     };
   }
