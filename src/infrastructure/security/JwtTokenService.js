@@ -41,12 +41,29 @@ class JwtTokenService {
   }
 
   verifyAccessToken(token) {
+    if (!token) {
+      throw new AppError("Access token is required", {
+        statusCode: 401,
+        code: "ACCESS_TOKEN_REQUIRED",
+      });
+    }
+
     try {
-      return jwt.verify(token, env.JWT_ACCESS_SECRET, {
+      const payload = jwt.verify(token, env.JWT_ACCESS_SECRET, {
         issuer: env.JWT_ISSUER,
         audience: env.JWT_AUDIENCE,
       });
+
+      if (payload.type !== "access") {
+        throw new AppError("Invalid access token type", {
+          statusCode: 401,
+          code: "INVALID_ACCESS_TOKEN_TYPE",
+        });
+      }
+
+      return payload;
     } catch (err) {
+      if (err instanceof AppError) throw err;
       throw new AppError("Invalid access token", {
         statusCode: 401,
         code: err?.name === "TokenExpiredError" ? "ACCESS_TOKEN_EXPIRED" : "INVALID_ACCESS_TOKEN",
@@ -55,12 +72,29 @@ class JwtTokenService {
   }
 
   verifyRefreshToken(token) {
+    if (!token) {
+      throw new AppError("Refresh token is required", {
+        statusCode: 401,
+        code: "REFRESH_TOKEN_REQUIRED",
+      });
+    }
+
     try {
-      return jwt.verify(token, env.JWT_REFRESH_SECRET, {
+      const payload = jwt.verify(token, env.JWT_REFRESH_SECRET, {
         issuer: env.JWT_ISSUER,
         audience: env.JWT_AUDIENCE,
       });
+
+      if (payload.type !== "refresh" || !payload.jti || !payload.familyId) {
+        throw new AppError("Invalid refresh token payload", {
+          statusCode: 401,
+          code: "INVALID_REFRESH_TOKEN_PAYLOAD",
+        });
+      }
+
+      return payload;
     } catch (err) {
+      if (err instanceof AppError) throw err;
       throw new AppError("Invalid refresh token", {
         statusCode: 401,
         code: err?.name === "TokenExpiredError" ? "REFRESH_TOKEN_EXPIRED" : "INVALID_REFRESH_TOKEN",
