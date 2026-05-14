@@ -20,12 +20,33 @@ const server = app.listen(env.PORT, () => {
   );
 });
 
+let isShuttingDown = false;
+
 async function shutdown(signal) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
   logger.warn({ signal }, "Graceful shutdown started");
-  server.close(async () => {
-    await prisma.$disconnect();
-    logger.info("HTTP server closed");
-    process.exit(0);
+
+  const forceExitTimer = setTimeout(() => {
+    logger.error({ signal }, "Graceful shutdown timed out");
+    process.exit(1);
+  }, 10000);
+  forceExitTimer.unref();
+
+  server.close(async (err) => {
+    if (err) {
+      logger.error({ err }, "HTTP server close failed");
+    }
+
+    try {
+      await prisma.$disconnect();
+      logger.info("HTTP server closed");
+      process.exit(err ? 1 : 0);
+    } catch (disconnectError) {
+      logger.error({ err: disconnectError }, "Database disconnect failed");
+      process.exit(1);
+    }
   });
 }
 
