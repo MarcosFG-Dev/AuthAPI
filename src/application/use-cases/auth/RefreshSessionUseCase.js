@@ -46,6 +46,7 @@ class RefreshSessionUseCase {
 
     const user = await this.userRepository.findById(tokenRecord.userId);
     if (!user) {
+      await this.refreshTokenRepository.revokeFamily(tokenRecord.familyId, tokenRecord.userId, "user_not_found");
       throw new AppError("User not found", { statusCode: 401, code: "USER_NOT_FOUND" });
     }
 
@@ -54,7 +55,7 @@ class RefreshSessionUseCase {
       familyId: tokenRecord.familyId,
     });
 
-    await this.refreshTokenRepository.rotateToken({
+    const rotatedToken = await this.refreshTokenRepository.rotateToken({
       currentJti: tokenRecord.jti,
       replacement: {
         jti: newRefreshToken.jti,
@@ -67,6 +68,14 @@ class RefreshSessionUseCase {
       },
       reason: "rotated",
     });
+
+    if (!rotatedToken) {
+      await this.refreshTokenRepository.revokeFamily(tokenRecord.familyId, tokenRecord.userId, "reuse_detected");
+      throw new AppError("Refresh token reuse detected", {
+        statusCode: 401,
+        code: "REFRESH_TOKEN_REUSE_DETECTED",
+      });
+    }
 
     const accessToken = this.tokenService.generateAccessToken({ userId: user.id });
 
