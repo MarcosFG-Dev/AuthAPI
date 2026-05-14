@@ -18,25 +18,28 @@ class AuthController {
     this.getCurrentUserUseCase = getCurrentUserUseCase;
   }
 
-  setRefreshCookie(res, refreshToken) {
-    res.cookie(env.COOKIE_REFRESH_NAME, refreshToken, {
+  getRefreshCookieOptions(expiresAt) {
+    const options = {
       httpOnly: true,
       secure: env.COOKIE_SECURE,
       sameSite: env.COOKIE_SAME_SITE,
       domain: env.COOKIE_DOMAIN || undefined,
       path: `${env.API_PREFIX}/auth/refresh`,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    };
+
+    if (expiresAt) {
+      options.expires = expiresAt;
+    }
+
+    return options;
+  }
+
+  setRefreshCookie(res, refreshToken, expiresAt) {
+    res.cookie(env.COOKIE_REFRESH_NAME, refreshToken, this.getRefreshCookieOptions(expiresAt));
   }
 
   clearRefreshCookie(res) {
-    res.clearCookie(env.COOKIE_REFRESH_NAME, {
-      httpOnly: true,
-      secure: env.COOKIE_SECURE,
-      sameSite: env.COOKIE_SAME_SITE,
-      domain: env.COOKIE_DOMAIN || undefined,
-      path: `${env.API_PREFIX}/auth/refresh`,
-    });
+    res.clearCookie(env.COOKIE_REFRESH_NAME, this.getRefreshCookieOptions());
   }
 
   register = async (req, res, next) => {
@@ -47,7 +50,7 @@ class AuthController {
         userAgent: req.headers["user-agent"] || "unknown",
       });
 
-      this.setRefreshCookie(res, result.refreshToken);
+      this.setRefreshCookie(res, result.refreshToken, result.refreshTokenExpiresAt);
       return res.status(201).json(
         successResponse({
           message: "User registered successfully",
@@ -71,7 +74,7 @@ class AuthController {
         userAgent: req.headers["user-agent"] || "unknown",
       });
 
-      this.setRefreshCookie(res, result.refreshToken);
+      this.setRefreshCookie(res, result.refreshToken, result.refreshTokenExpiresAt);
       return res.status(200).json(
         successResponse({
           message: "User authenticated successfully",
@@ -96,7 +99,7 @@ class AuthController {
         userAgent: req.headers["user-agent"] || "unknown",
       });
 
-      this.setRefreshCookie(res, result.refreshToken);
+      this.setRefreshCookie(res, result.refreshToken, result.refreshTokenExpiresAt);
       return res.status(200).json(
         successResponse({
           message: "Session refreshed successfully",
