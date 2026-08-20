@@ -131,7 +131,6 @@ Pipeline em `.github/workflows/ci.yml` com:
 
 (checklist) Oque ja foi testado!
 
-- [x] Arquitetura enterprise
 - [x] Segurança base corporativa
 - [x] Migrations e banco profissional
 - [x] Health checks de liveness/readiness
